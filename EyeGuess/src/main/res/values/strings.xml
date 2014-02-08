@@ -11,4 +11,6 @@
     <string name="activity_main_choose">Choose a subject</string>
     <string name="activity_main_movies_header">MOVIES</string>
     <string name="activity_main_actors_header">ACTORS</string>
+    <string name="activity_result_score_label">Score:</string>
+    <string name="activity_result_skipped_label">Skipped:</string>
 </resources>

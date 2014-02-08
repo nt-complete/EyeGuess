@@ -1,7 +1,9 @@
 package com.ntcomplete.eyeguess.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -9,9 +11,11 @@ import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
 import com.google.android.glass.touchpad.Gesture;
 import com.google.android.glass.touchpad.GestureDetector;
+import com.google.common.primitives.Booleans;
 import com.ntcomplete.eyeguess.R;
 import com.ntcomplete.eyeguess.helpers.JSONHelper;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -19,6 +23,8 @@ import java.util.TimerTask;
  * @author nick
  */
 public class QuizActivity extends Activity {
+
+    private  final String TAG = getClass().getSimpleName();
 
     public static final String EXTRA_QUIZ_CATEGORY = "QuizCategory";
 
@@ -31,10 +37,15 @@ public class QuizActivity extends Activity {
     private View mResponseView;
 
     private int mScore = 0;
+    private int mPassed = 0;
 
     private JSONHelper mJSONHelper;
 
     private AlphaAnimation mAlphaAnimation;
+
+    private ArrayList<String> mQuestions;
+    private ArrayList<Boolean> mResults;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +68,13 @@ public class QuizActivity extends Activity {
 
         mJSONHelper = new JSONHelper(this, categoryId);
 
-        mQuestionView.setText(mJSONHelper.getQuestion());
+
+        mQuestions = new ArrayList<String>();
+        mResults = new ArrayList<Boolean>();
+
+        String question = mJSONHelper.getQuestion();
+        mQuestionView.setText(question);
+        mQuestions.add(question);
 
         mGestureDetector = new GestureDetector(this);
         mGestureDetector.setBaseListener(mBaseListener);
@@ -65,24 +82,23 @@ public class QuizActivity extends Activity {
         mAlphaAnimation = new AlphaAnimation(1.f, 0.f);
         mAlphaAnimation.setDuration(750);
 
-        TimerTask task = new TimerTask() {
-            int milliseconds = 99;
-            int seconds = 0;
-            int minutes = 1;
+
+        final Timer timer = new Timer();
+
+        final TimerTask task = new TimerTask() {
+            int milliseconds = 0;
+            int seconds = 3;
+            int minutes = 0;
 
             @Override
             public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(seconds >= 0) {
-                            mTimerView.setText(String.format("%02d:%02d:%02d", minutes, seconds, milliseconds));
-                        }
-                   }});
                 milliseconds--;
                 if(milliseconds <= 0) {
-                    if(seconds == 0 && minutes == 0) {
+                    Log.d(TAG, String.format("Minute: %d, second: %d, ms: %d", minutes, seconds, milliseconds));
+                    if(minutes < 0 && seconds <= 0 && milliseconds <= 0) {
+                        Log.d(TAG, "Cancelling!");
                         cancel();
+                        startResultActivity();
                     }
                     milliseconds = 99;
                     seconds--;
@@ -92,12 +108,32 @@ public class QuizActivity extends Activity {
                     }
                 }
 
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(seconds >= 0 && minutes >= 0 && milliseconds >= 0) {
+                            mTimerView.setText(String.format("%02d:%02d:%02d", minutes, seconds, milliseconds));
+                        } else {
+                            timer.cancel();
+                            startResultActivity();
+                        }
+                   }});
+
             }
         };
 
-        Timer timer = new Timer();
         timer.scheduleAtFixedRate(task, 0, 10);
 
+    }
+
+    private void startResultActivity() {
+        Intent resultIntent = new Intent(QuizActivity.this, ResultActivity.class);
+        resultIntent.putExtra(ResultActivity.EXTRA_PASSED, mPassed);
+        resultIntent.putExtra(ResultActivity.EXTRA_SCORE, mScore);
+        resultIntent.putExtra(ResultActivity.EXTRA_QUESTIONS, mQuestions);
+        boolean[] resultArray = Booleans.toArray(mResults);
+        resultIntent.putExtra(ResultActivity.EXTRA_RESULTS, resultArray);
+        startActivity(resultIntent);
     }
 
     GestureDetector.BaseListener mBaseListener = new GestureDetector.BaseListener() {
@@ -107,7 +143,11 @@ public class QuizActivity extends Activity {
                 mScore++;
                 mScoreView.setText(String.valueOf(mScore));
 
-                mQuestionView.setText(mJSONHelper.getQuestion());
+                String question = mJSONHelper.getQuestion();
+                mQuestions.add(question);
+                mQuestionView.setText(question);
+                mResults.add(true);
+
 
                 mResponseView.setBackgroundColor(getResources().getColor(android.R.color.holo_green_dark));
                 mResponseView.clearAnimation();
@@ -115,7 +155,12 @@ public class QuizActivity extends Activity {
                 return true;
             }
             if(gesture == Gesture.SWIPE_LEFT || gesture == Gesture.TWO_SWIPE_LEFT) {
-                mQuestionView.setText(mJSONHelper.getQuestion());
+                mPassed++;
+
+                String question = mJSONHelper.getQuestion();
+                mQuestions.add(question);
+                mQuestionView.setText(question);
+                mResults.add(false);
 
                 mResponseView.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
                 mResponseView.clearAnimation();
