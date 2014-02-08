@@ -80,7 +80,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Log.d(TAG, "Selected: " + i);
         if(i > 0) {
-            startActivity(new Intent(MainActivity.this, CountActivity.class));
+            Intent countIntent = new Intent(MainActivity.this, CountActivity.class);
+            countIntent.putExtra(QuizActivity.EXTRA_QUIZ_CATEGORY, i-1);
+            startActivity(countIntent);
         }
 
     }
