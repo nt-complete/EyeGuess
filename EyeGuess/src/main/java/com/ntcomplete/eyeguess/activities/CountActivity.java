@@ -40,7 +40,7 @@ public class CountActivity extends Activity {
                 Intent quizIntent = new Intent(CountActivity.this, QuizActivity.class);
                 quizIntent.putExtra(QuizActivity.EXTRA_QUIZ_CATEGORY, quizId);
                 startActivity(quizIntent);
-
+                finish();
             }
         }.start();
 
