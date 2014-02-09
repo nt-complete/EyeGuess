@@ -3,7 +3,6 @@ package com.ntcomplete.eyeguess.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 import com.ntcomplete.eyeguess.R;
 
@@ -18,6 +17,8 @@ public class CountActivity extends Activity {
     private final String TAG = getClass().getSimpleName();
 
     private int mQuizCategory;
+
+    private Timer mTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,31 +37,9 @@ public class CountActivity extends Activity {
     protected void onStart() {
         super.onStart();
 
-
-
         final TextView textView = (TextView) findViewById(R.id.activity_count_textview);
 
-
-//        new CountDownTimer(4000, 1000) {
-//            int count = 3;
-//
-//            public void onTick(long millisUntilFinished) {
-//                Log.d(TAG, "secs left: " + millisUntilFinished + " count: " + count);
-//                textView.setText(String.valueOf(count));
-//                count--;
-//
-//            }
-//
-//            public void onFinish() {
-//                Intent quizIntent = new Intent(CountActivity.this, QuizActivity.class);
-//                quizIntent.putExtra(QuizActivity.EXTRA_QUIZ_CATEGORY, mQuizCategory);
-//                startActivity(quizIntent);
-//                finish();
-//            }
-//        }.start();
-
-
-        final Timer timer = new Timer();
+        mTimer = new Timer();
 
         final TimerTask task = new TimerTask() {
             int count = 3;
@@ -68,10 +47,10 @@ public class CountActivity extends Activity {
             @Override
             public void run() {
                 if(count == 1) {
-                    timer.cancel();
+                    mTimer.cancel();
                     startQuiz();
                 } else {
-                    Log.d(TAG, "count: " + count);
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -85,8 +64,15 @@ public class CountActivity extends Activity {
             }
         };
 
-        timer.scheduleAtFixedRate(task, 500, 1000);
+        mTimer.scheduleAtFixedRate(task, 500, 1000);
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mTimer.cancel();
+        mTimer.purge();
     }
 
     private void startQuiz() {

@@ -30,7 +30,6 @@ public class QuestionResultsAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        Log.d(TAG, "Count: " + mQuestions.size());
         return mQuestions.size();
     }
 

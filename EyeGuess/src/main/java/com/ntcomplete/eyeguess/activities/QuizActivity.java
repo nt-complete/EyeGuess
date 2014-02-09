@@ -47,6 +47,10 @@ public class QuizActivity extends Activity {
 
     private boolean mStartedNext = false;
 
+    private int mCategoryId;
+
+    private Timer mTimer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +60,7 @@ public class QuizActivity extends Activity {
         // Keep the screen on, please.
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        int categoryId = getIntent().getExtras().getInt(EXTRA_QUIZ_CATEGORY);
+        mCategoryId = getIntent().getIntExtra(QuizActivity.EXTRA_QUIZ_CATEGORY, 0);
 
         mQuestionView = (TextView) findViewById(R.id.activity_quiz_question);
         mScoreView = (TextView) findViewById(R.id.activity_quiz_score);
@@ -67,7 +71,7 @@ public class QuizActivity extends Activity {
 
         mResponseView = findViewById(R.id.activity_quiz_response_view);
 
-        mJSONHelper = new JSONHelper(this, categoryId);
+        mJSONHelper = new JSONHelper(this, mCategoryId);
 
 
         mQuestions = new ArrayList<String>();
@@ -89,7 +93,7 @@ public class QuizActivity extends Activity {
         super.onStart();
 
 
-        final Timer timer = new Timer();
+        mTimer = new Timer();
 
         TimerTask task = new TimerTask() {
             int milliseconds = 0;
@@ -118,7 +122,7 @@ public class QuizActivity extends Activity {
                         if(seconds >= 0 && minutes >= 0 && milliseconds >= 0) {
                             mTimerView.setText(String.format("%02d:%02d:%02d", minutes, seconds, milliseconds));
                         } else {
-                            timer.cancel();
+                            mTimer.cancel();
                             startResultActivity();
                             mStartedNext = true;
                         }
@@ -127,8 +131,15 @@ public class QuizActivity extends Activity {
             }
         };
 
-        timer.scheduleAtFixedRate(task, 500, 10);
+        mTimer.scheduleAtFixedRate(task, 500, 10);
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mTimer.cancel();
+        mTimer.purge();
     }
 
     private void startResultActivity() {
@@ -139,6 +150,8 @@ public class QuizActivity extends Activity {
             resultIntent.putExtra(ResultActivity.EXTRA_QUESTIONS, mQuestions);
             boolean[] resultArray = Booleans.toArray(mResults);
             resultIntent.putExtra(ResultActivity.EXTRA_RESULTS, resultArray);
+            resultIntent.putExtra(QuizActivity.EXTRA_QUIZ_CATEGORY, mCategoryId);
+
             startActivity(resultIntent);
             finish();
         }

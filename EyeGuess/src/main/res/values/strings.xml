@@ -11,4 +11,6 @@
     <string name="activity_main_actors_header">ACTORS</string>
     <string name="activity_result_score_label">Score:</string>
     <string name="activity_result_skipped_label">Skipped:</string>
+    <string name="view_result_instructions_two_fingers">Tap with two fingers to play this category again.</string>
+    <string name="view_result_instructions_three_fingers">Tap with three fingers to start over.</string>
 </resources>
