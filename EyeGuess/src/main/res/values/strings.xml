@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">My Module</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name">Eye Guess</string>
 
 
-    <string name="glass_voice_trigger">I can guess</string>
+    <string name="glass_voice_trigger">Eye Guess</string>
     <string name="glass_voice_prompt">tell me what\'s on your mind</string>
     <string name="activity_main_choose">Choose a subject</string>
     <string name="activity_main_movies_header">MOVIES</string>

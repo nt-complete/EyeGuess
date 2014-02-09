@@ -1,6 +1,7 @@
 package com.ntcomplete.eyeguess.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
  */
 public class QuestionResultsAdapter extends BaseAdapter {
 
+    private final String TAG = getClass().getSimpleName();
+
     private ArrayList<String> mQuestions;
     private boolean[] mResults;
     private Context mContext;
@@ -27,6 +30,7 @@ public class QuestionResultsAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
+        Log.d(TAG, "Count: " + mQuestions.size());
         return mQuestions.size();
     }
 
@@ -54,7 +58,7 @@ public class QuestionResultsAdapter extends BaseAdapter {
                 resultTextView.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_red_dark));
             }
         } else {
-            resultTextView.setBackgroundColor(mContext.getResources().getColor(android.R.color.transparent));
+            resultTextView.setBackgroundColor(mContext.getResources().getColor(android.R.color.black));
         }
 
 

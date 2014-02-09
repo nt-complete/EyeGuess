@@ -4,8 +4,9 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
         android:textSize="18sp"
-    android:text="Temporary Movie Title"
+    android:text="Temporary Movie Title that very long and should probably be shorter. Seriously, directors."
     android:gravity="center"
     android:padding="10dp"
+    android:textColor="@android:color/white"
     />
 

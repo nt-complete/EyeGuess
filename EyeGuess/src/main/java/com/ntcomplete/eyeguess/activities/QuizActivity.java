@@ -3,7 +3,6 @@ package com.ntcomplete.eyeguess.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -46,6 +45,8 @@ public class QuizActivity extends Activity {
     private ArrayList<String> mQuestions;
     private ArrayList<Boolean> mResults;
 
+    private boolean mStartedNext = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,30 +82,33 @@ public class QuizActivity extends Activity {
 
         mAlphaAnimation = new AlphaAnimation(1.f, 0.f);
         mAlphaAnimation.setDuration(750);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
 
         final Timer timer = new Timer();
 
-        final TimerTask task = new TimerTask() {
+        TimerTask task = new TimerTask() {
             int milliseconds = 0;
-            int seconds = 3;
+            int seconds = 5;
             int minutes = 0;
 
             @Override
             public void run() {
                 milliseconds--;
                 if(milliseconds <= 0) {
-                    Log.d(TAG, String.format("Minute: %d, second: %d, ms: %d", minutes, seconds, milliseconds));
-                    if(minutes < 0 && seconds <= 0 && milliseconds <= 0) {
-                        Log.d(TAG, "Cancelling!");
-                        cancel();
-                        startResultActivity();
-                    }
+
                     milliseconds = 99;
                     seconds--;
                     if(seconds <= 0) {
-                        minutes--;
-                        seconds = 59;
+                        if(minutes > 0) {
+                            minutes--;
+                            seconds = 59;
+                        }
+
                     }
                 }
 
@@ -116,24 +120,29 @@ public class QuizActivity extends Activity {
                         } else {
                             timer.cancel();
                             startResultActivity();
+                            mStartedNext = true;
                         }
-                   }});
+                    }});
 
             }
         };
 
-        timer.scheduleAtFixedRate(task, 0, 10);
+        timer.scheduleAtFixedRate(task, 500, 10);
 
     }
 
     private void startResultActivity() {
-        Intent resultIntent = new Intent(QuizActivity.this, ResultActivity.class);
-        resultIntent.putExtra(ResultActivity.EXTRA_PASSED, mPassed);
-        resultIntent.putExtra(ResultActivity.EXTRA_SCORE, mScore);
-        resultIntent.putExtra(ResultActivity.EXTRA_QUESTIONS, mQuestions);
-        boolean[] resultArray = Booleans.toArray(mResults);
-        resultIntent.putExtra(ResultActivity.EXTRA_RESULTS, resultArray);
-        startActivity(resultIntent);
+        if(!mStartedNext) {
+            Intent resultIntent = new Intent(QuizActivity.this, ResultActivity.class);
+            resultIntent.putExtra(ResultActivity.EXTRA_PASSED, mPassed);
+            resultIntent.putExtra(ResultActivity.EXTRA_SCORE, mScore);
+            resultIntent.putExtra(ResultActivity.EXTRA_QUESTIONS, mQuestions);
+            boolean[] resultArray = Booleans.toArray(mResults);
+            resultIntent.putExtra(ResultActivity.EXTRA_RESULTS, resultArray);
+            startActivity(resultIntent);
+            finish();
+        }
+
     }
 
     GestureDetector.BaseListener mBaseListener = new GestureDetector.BaseListener() {
