@@ -49,7 +49,7 @@ public class QuizActivity extends Activity {
 
     private boolean mStartedNext = false;
 
-    private int mCategoryId;
+    private String mCategoryId;
 
     private Timer mTimer;
 
@@ -62,14 +62,15 @@ public class QuizActivity extends Activity {
         // Keep the screen on, please.
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        mCategoryId = getIntent().getIntExtra(QuizActivity.EXTRA_QUIZ_CATEGORY, 0);
+        mCategoryId = getIntent().getStringExtra(QuizActivity.EXTRA_QUIZ_CATEGORY);
 
         ButterKnife.inject(this);
 
         mScoreView.setText(String.valueOf(mScore));
 
 
-        mJSONHelper = new JSONHelper(this, mCategoryId);
+        mJSONHelper = JSONHelper.getInstance(this);
+        mJSONHelper.setCategory(mCategoryId);
 
 
         mQuestions = new ArrayList<String>();

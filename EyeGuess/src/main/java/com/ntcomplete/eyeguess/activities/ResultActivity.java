@@ -33,7 +33,7 @@ public class ResultActivity extends Activity {
 
     private GestureDetector mGestureDetector;
 
-    private int mCategory;
+    private String mCategory;
 
     @InjectView(R.id.activity_result_questions) ListView mQuestionsListView;
     @InjectView(R.id.activity_result_instructions) FrameLayout mInstructionsView;
@@ -51,7 +51,7 @@ public class ResultActivity extends Activity {
         int score = extras.getInt(EXTRA_SCORE);
         int passed = extras.getInt(EXTRA_PASSED);
 
-        mCategory = extras.getInt(QuizActivity.EXTRA_QUIZ_CATEGORY);
+        mCategory = extras.getString(QuizActivity.EXTRA_QUIZ_CATEGORY);
 
         ArrayList<String> questions = extras.getStringArrayList(EXTRA_QUESTIONS);
         Log.d(TAG, questions.toString());

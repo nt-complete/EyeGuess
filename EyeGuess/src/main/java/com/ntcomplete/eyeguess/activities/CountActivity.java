@@ -20,7 +20,7 @@ public class CountActivity extends Activity {
 
     private final String TAG = getClass().getSimpleName();
 
-    private int mQuizCategory;
+    private String mQuizCategory;
 
     private Timer mTimer;
 
@@ -30,7 +30,7 @@ public class CountActivity extends Activity {
 
         setContentView(R.layout.activity_count);
 
-        mQuizCategory = getIntent().getExtras().getInt(QuizActivity.EXTRA_QUIZ_CATEGORY);
+        mQuizCategory = getIntent().getExtras().getString(QuizActivity.EXTRA_QUIZ_CATEGORY);
 
         ButterKnife.inject(this);
 

@@ -43,6 +43,10 @@ public class CustomCardScrollAdapter extends CardScrollAdapter {
         return mCards.get(position);
     }
 
+    public String getTitle(int position) {
+        return mCards.get(position).getText();
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         return mCards.get(position).toView();

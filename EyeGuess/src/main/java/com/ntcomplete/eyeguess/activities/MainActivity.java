@@ -10,6 +10,9 @@ import com.google.android.glass.app.Card;
 import com.google.android.glass.widget.CardScrollView;
 import com.ntcomplete.eyeguess.R;
 import com.ntcomplete.eyeguess.adapters.CustomCardScrollAdapter;
+import com.ntcomplete.eyeguess.helpers.JSONHelper;
+
+import java.util.ArrayList;
 
 public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
 
@@ -38,18 +41,30 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         card.setText(getString(R.string.activity_main_choose));
         mAdapter.addCard(card);
 
-        card = new Card(this);
-        card.setText(getString(R.string.activity_main_movies_header));
-        card.setImageLayout(Card.ImageLayout.FULL);
-        card.addImage(R.drawable.movie_reel);
-        mAdapter.addCard(card);
 
+        JSONHelper jsonHelper = JSONHelper.getInstance(this);
 
-        card = new Card(this);
-        card.setText(getString(R.string.activity_main_actors_header));
-        card.setImageLayout(Card.ImageLayout.FULL);
-        card.addImage(R.drawable.arrested_development);
-        mAdapter.addCard(card);
+        ArrayList<String> keys = jsonHelper.getKeys();
+
+        for(String key : keys) {
+            card = new Card(this);
+            card.setText(key.toUpperCase());
+            card.setImageLayout(Card.ImageLayout.FULL);
+            card.addImage(R.drawable.arrested_development);
+            mAdapter.addCard(card);
+        }
+//        card = new Card(this);
+//        card.setText(getString(R.string.activity_main_movies_header));
+//        card.setImageLayout(Card.ImageLayout.FULL);
+//        card.addImage(R.drawable.movie_reel);
+//        mAdapter.addCard(card);
+//
+//
+//        card = new Card(this);
+//        card.setText(getString(R.string.activity_main_actors_header));
+//        card.setImageLayout(Card.ImageLayout.FULL);
+//        card.addImage(R.drawable.arrested_development);
+//        mAdapter.addCard(card);
     }
 
 
@@ -57,7 +72,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if(i > 0) {
             Intent countIntent = new Intent(MainActivity.this, CountActivity.class);
-            countIntent.putExtra(QuizActivity.EXTRA_QUIZ_CATEGORY, i-1);
+            Log.d(TAG, "Selected: " + i);
+            Log.d(TAG, "Title: " + mAdapter.getTitle(i));
+            countIntent.putExtra(QuizActivity.EXTRA_QUIZ_CATEGORY, mAdapter.getTitle(i));
             startActivity(countIntent);
         }
 

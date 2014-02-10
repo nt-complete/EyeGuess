@@ -1,5 +1,6 @@
-{ 
-     "movies" : [
+{ "categories": [
+    {   "title" : "movies" ,
+        "data" : [
     "Avatar",
     "Titanic",
     "The Avengers",
@@ -575,9 +576,9 @@
     "You Don't Mess with the Zohan",
     "Die Hard: With a Vengeance",
     "Collateral"
-    ] ,
-
-     "actors" : [
+    ] },
+    { "title" : "actors",
+     "data" : [
     "Tom Hanks",
     "Harrison Ford",
     "Eddie Murphy",
@@ -1090,9 +1091,10 @@
     "Miley Cyrus",
     "Joey King",
     "Dev Patel",
-    "Kelsey Grammer" ],
-
-    "animals": [
+    "Kelsey Grammer" ]
+    },
+    { "title" : "animals",
+    "data": [
         "Aardvark",
         "Albatross",
         "Alligator",
@@ -1319,7 +1321,7 @@
         "Wren",
         "Yak",
         "Zebra"
+    ] }
     ]
-
  }
 
