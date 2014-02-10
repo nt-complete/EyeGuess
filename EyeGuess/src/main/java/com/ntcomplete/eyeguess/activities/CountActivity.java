@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.ntcomplete.eyeguess.R;
 
 import java.util.Timer;
@@ -13,6 +15,8 @@ import java.util.TimerTask;
  * @author nick
  */
 public class CountActivity extends Activity {
+
+    @InjectView(R.id.activity_count_textview) TextView mCountTextView;
 
     private final String TAG = getClass().getSimpleName();
 
@@ -28,7 +32,7 @@ public class CountActivity extends Activity {
 
         mQuizCategory = getIntent().getExtras().getInt(QuizActivity.EXTRA_QUIZ_CATEGORY);
 
-
+        ButterKnife.inject(this);
 
 
     }
@@ -37,7 +41,6 @@ public class CountActivity extends Activity {
     protected void onStart() {
         super.onStart();
 
-        final TextView textView = (TextView) findViewById(R.id.activity_count_textview);
 
         mTimer = new Timer();
 
@@ -54,7 +57,7 @@ public class CountActivity extends Activity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            textView.setText(String.valueOf(count));
+                            mCountTextView.setText(String.valueOf(count));
                         }
                     });
                     count--;

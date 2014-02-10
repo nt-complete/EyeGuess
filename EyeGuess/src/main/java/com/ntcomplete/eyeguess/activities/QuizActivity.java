@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.google.android.glass.touchpad.Gesture;
 import com.google.android.glass.touchpad.GestureDetector;
 import com.google.common.primitives.Booleans;
@@ -29,11 +31,11 @@ public class QuizActivity extends Activity {
 
     private GestureDetector mGestureDetector;
 
-    private TextView mQuestionView;
-    private TextView mScoreView;
-    private TextView mTimerView;
+    @InjectView(R.id.activity_quiz_question) TextView mQuestionView;
+    @InjectView(R.id.activity_quiz_score) TextView mScoreView;
+    @InjectView(R.id.activity_quiz_time_left) TextView mTimerView;
 
-    private View mResponseView;
+    @InjectView(R.id.activity_quiz_response_view) View mResponseView;
 
     private int mScore = 0;
     private int mPassed = 0;
@@ -62,14 +64,10 @@ public class QuizActivity extends Activity {
 
         mCategoryId = getIntent().getIntExtra(QuizActivity.EXTRA_QUIZ_CATEGORY, 0);
 
-        mQuestionView = (TextView) findViewById(R.id.activity_quiz_question);
-        mScoreView = (TextView) findViewById(R.id.activity_quiz_score);
-        mTimerView = (TextView) findViewById(R.id.activity_quiz_time_left);
-
+        ButterKnife.inject(this);
 
         mScoreView.setText(String.valueOf(mScore));
 
-        mResponseView = findViewById(R.id.activity_quiz_response_view);
 
         mJSONHelper = new JSONHelper(this, mCategoryId);
 

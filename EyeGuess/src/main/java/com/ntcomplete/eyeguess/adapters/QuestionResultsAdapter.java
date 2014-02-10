@@ -1,12 +1,13 @@
 package com.ntcomplete.eyeguess.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.ntcomplete.eyeguess.R;
 
 import java.util.ArrayList;
@@ -45,24 +46,41 @@ public class QuestionResultsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        TextView resultTextView = (TextView) LayoutInflater.from(mContext).inflate(R.layout.row_question_result, viewGroup, false);
-        resultTextView.setText(mQuestions.get(i));
+        ViewHolder holder;
+
+
+        if (view != null) {
+            holder = (ViewHolder) view.getTag();
+        } else {
+            view = LayoutInflater.from(mContext).inflate(R.layout.row_question_result, viewGroup, false);
+            holder = new ViewHolder(view);
+            view.setTag(holder);
+        }
+
+        holder.resultTextView.setText(mQuestions.get(i));
 
         if(i < mResults.length) {
             boolean result = mResults[i];
 
             if(result) {
-                resultTextView.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_green_dark));
+                holder.resultTextView.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_green_dark));
             } else {
-                resultTextView.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_red_dark));
+                holder.resultTextView.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_red_dark));
             }
         } else {
-            resultTextView.setBackgroundColor(mContext.getResources().getColor(android.R.color.black));
+            holder.resultTextView.setBackgroundColor(mContext.getResources().getColor(android.R.color.black));
         }
 
 
 
-        return resultTextView;
+        return view;
     }
 
+    public class ViewHolder {
+        @InjectView(R.id.row_question_result_textview) TextView resultTextView;
+
+        public ViewHolder(View view) {
+            ButterKnife.inject(this, view);
+        }
+    }
 }

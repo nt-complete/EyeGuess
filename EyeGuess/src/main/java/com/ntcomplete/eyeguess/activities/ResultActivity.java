@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.google.android.glass.touchpad.Gesture;
 import com.google.android.glass.touchpad.GestureDetector;
 import com.ntcomplete.eyeguess.R;
@@ -28,18 +30,22 @@ public class ResultActivity extends Activity {
     public static final String EXTRA_QUESTIONS = "QuizQuestions";
     public static final String EXTRA_RESULTS = "QuizResults";
 
-    private ListView mQuestionsListView;
 
     private GestureDetector mGestureDetector;
 
     private int mCategory;
 
-    private FrameLayout mInstructionsView;
+    @InjectView(R.id.activity_result_questions) ListView mQuestionsListView;
+    @InjectView(R.id.activity_result_instructions) FrameLayout mInstructionsView;
+    @InjectView(R.id.activity_result_score) TextView mScoreTextView;
+    @InjectView(R.id.activity_result_passed) TextView mPassedTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
+        ButterKnife.inject(this);
+
 
         Bundle extras = getIntent().getExtras();
         int score = extras.getInt(EXTRA_SCORE);
@@ -52,15 +58,12 @@ public class ResultActivity extends Activity {
         boolean[] resultsList = extras.getBooleanArray(EXTRA_RESULTS);
 
 
-        TextView scoreTextView = (TextView) findViewById(R.id.activity_result_score);
-        TextView passedTextView = (TextView) findViewById(R.id.activity_result_passed);
-        scoreTextView.setText(String.valueOf(score));
-        passedTextView.setText(String.valueOf(passed));
 
-        mQuestionsListView = (ListView) findViewById(R.id.activity_result_questions);
+        mScoreTextView.setText(String.valueOf(score));
+        mPassedTextView.setText(String.valueOf(passed));
+
         mQuestionsListView.setAdapter(new QuestionResultsAdapter(this, questions, resultsList));
 
-        mInstructionsView = (FrameLayout) findViewById(R.id.activity_result_instructions);
         mInstructionsView.setVisibility(View.GONE);
 
         mGestureDetector = new GestureDetector(this);
